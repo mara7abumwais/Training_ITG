@@ -76,3 +76,7 @@ form option{
     font-size: 10px;
     margin-bottom: 10px;
 }
+
+.invalid{
+    border:1px solid red;
+}
