@@ -108,11 +108,14 @@ body, html{
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-image: url(../img/receipt.png);
+    background-size: cover; 
+    background-position: center;
     margin: 15% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 30%; 
+    width: 32%;
+    height: 60%;
 }
 
 .close {
@@ -129,12 +132,9 @@ body, html{
     cursor: pointer;
 }
 
-
-
-
-
-.special_notes_note
-{
+.special_notes_note {
     color: red;
-    font-size: 12px;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 10px;
 }

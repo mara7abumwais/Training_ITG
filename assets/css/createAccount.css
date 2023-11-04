@@ -79,3 +79,7 @@ form input {
     color: red;
     font-size: .8em;
 }
+
+.invalid{
+    border: 1px solid red;
+}
