@@ -33,7 +33,7 @@ register_form.addEventListener('submit', (event)=> {
 
     const emailRegex = /^[A-Za-z0-9._-]+@[A-Z0-9.-]+\.[a-z]{2,}$/i;
     const phoneRegex = /^[0-9]{10}$/;
-    const passwordRegex = /^(?=.*[A-Za-z])[A-Za-z0-9]{8,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])[A-Za-z0-9!@#$%^&*]{8,}$/;
 
     const isValid = [
         validateInput(register_nameInput, null, nameError, 'Name is required', null),
