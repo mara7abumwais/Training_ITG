@@ -80,7 +80,9 @@ body, html{
     padding-right: 10px;
 }
 
-#submit_order {
+#submit_order
+
+{
     background-color: #413838;
     color: white;
     padding: 10px 20px;
@@ -116,6 +118,7 @@ body, html{
     border: 1px solid #888;
     width: 32%;
     height: 60%;
+    color: #343434;
 }
 
 .close {
@@ -137,4 +140,51 @@ body, html{
     font-size: 14px;
     text-align: center;
     margin-top: 10px;
+}
+
+#confirm_order,#cancel_order{
+    background-color: #626262;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#confirm_order:hover,#cancel_order:hover
+{
+    background-color: #3c3c3c;
+}
+
+/*Confirmation Page*/
+.confirmMsgContainer
+{
+    width: 30%;
+    height: 30%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.697);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 10px;
+}
+
+.confirmMsgContainer p
+{
+    padding: 10px 20px;
+    font-size: 1.5em;
+    color:#3c3c3c ;
+}
+
+.confirmMsgContainer button
+{
+    padding: 10px 10px;
+    border-radius: 5px;
+    background-color: #626262;
+}
+.confirmMsgContainer a
+{
+    color: white;
+    text-decoration: none;
 }

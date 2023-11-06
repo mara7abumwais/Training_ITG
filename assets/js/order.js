@@ -3,6 +3,8 @@ const food_modal = document.getElementById("food_modal");
 const close_foodModel = document.getElementById('close_foodModel');
 const food_options = document.getElementsByName('food_options');
 const special_notes = document.getElementById('special_notes');
+const confirm_order = document.getElementById('confirm_order');
+const cancel_order = document.getElementById('cancel_order');
 
 // to get user name
 const urlSearchParams = new URLSearchParams(window.location.search);
@@ -40,7 +42,7 @@ order_form.addEventListener('submit',(event)=>{
     event.preventDefault();
     
     //Receipt modal data
-     // Get the modal elements using getElementById
+    // Get the modal elements using getElementById
     const user_name = document.getElementById('user_name');
     const order_date = document.getElementById('order_date');
     const user_price = document.getElementById('user_price');
@@ -51,21 +53,32 @@ order_form.addEventListener('submit',(event)=>{
     let datetime = currentdate.getDay() + "/" + currentdate.getMonth() + "/" + currentdate.getFullYear();
 
 
-     // Set the innerHTML of the modal receipt elements
+    // Set the innerHTML of the modal receipt elements
     user_name.innerHTML = urlSearchParams.get('register_name');
     user_order.innerHTML = getSelectedFood();
     user_price.innerHTML = "$"+calculatePrice(user_order.innerHTML);
     order_date.innerHTML = datetime;
     user_notes.innerHTML = "Your special notes: " + special_notes.value;
 
-    //Reset the
-    order_form.reset();
     //display receipt modal
     food_modal.style.display = "block";
-
 });
 
 //close receipt modal
 close_foodModel.onclick = function() {
     food_modal.style.display = "none";
 }
+
+//cancel order
+cancel_order.addEventListener('click',(e)=>
+{
+    food_modal.style.display = "none";
+})
+
+//confirm order
+confirm_order.addEventListener('click',(e)=>
+{
+    //Reset the form
+    order_form.reset();
+    window.location.href = "confirmationPage.html";
+})
