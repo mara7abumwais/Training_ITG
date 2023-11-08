@@ -14,7 +14,7 @@ const displayWishlistMovies = (movies)=>
         }
         movies.forEach(movie => {
             const movieCard = document.createElement('div');
-            movieCard.className = "col-3";
+            movieCard.className = "col-lg-3 col-12";
             movieCard.innerHTML = `
                 <div class="movie_overlay">
                     <a onClick="showMovieDetails(${movie['id']})">
