@@ -10,21 +10,24 @@
       <link rel="stylesheet" href="assets/css/style.css">
       <link rel="stylesheet" href="assets/css/all.min.css">
 
-   <title>To-Do List Application</title>
+   <title>Movie Recommendation Application</title>
 </head>
 
 <body>
 
-   <nav class="navbar navbar-expand-lg ">
+   <nav class="navbar navbar-expand-lg bg-body-tertiary">
       <div class="container-fluid">
-         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-               <a class="nav-link active" aria-current="page" href="#">To-Do-List</a>
-            </li>
-         </ul>
-            <a class="navbar-text" href="#taskList">
-               Try it
-            </a>
+         <a class="navbar-brand" href="#" style="color: white;">XMovies</a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#">Home</a>
+               </li>
+            </ul>
+            <a href="wishlistPage.html" id="WishlistButton">Wishlist</a>
          </div>
       </div>
    </nav>
@@ -32,28 +35,19 @@
 
 
    <header class="header">
-      <h1>Organize your work and life, finally.</h1>
-      <p>Become focused, organized, and calm with Todoist. The world's #1 task manager and to-do list app.</p>
-      <a href="#taskList">Try It Now </a>
+      <div class="container">
+            <div class="search">
+               <input type="text" class="searchTerm" id="movieSearch" placeholder="Search for movie">
+               <button type="submit" class="searchButton">
+                  <i class="fa fa-search"></i>
+               </button>
+            </div>
+         <ul class="cards" id="cards">
+            
+         </ul>         
+      </div>
    </header>
    
-   <section class="container">
-      <div class="home_background"></div>
-      <div class="home_content">
-         <h2>Your To-Do List:</h2>
-         <ul id="taskList">
-         </ul>
-         <div>
-            <input type="text" id="addTask_input">
-            <button id="addNewTask">Add Task</button>
-         </div>
-         <span id="addTask_error" style="display: none;"></span>
-         <div>
-         <button id="deleteAllTasks">Delete All</button>
-         </div>
-      </div>
-   </section>
-
    <footer>
       <div>
          <i class="fa-brands fa-instagram"></i>

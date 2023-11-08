@@ -1,155 +1,183 @@
-const taskList = document.getElementById('taskList');
-const addNewTask = document.getElementById('addNewTask');
-const deleteAllTasks = document.getElementById('deleteAllTasks');
+const api_key = "a2bb91db894787421ec75a2bf612017c";
+const movieSearchInput = document.getElementById('movieSearch'); 
+const like_movie = document.getElementsByClassName('like_movie');
+const base_url = "https://image.tmdb.org/t/p/w500" 
+let genres = [];
 
-//add task function
-function addTask(taskContent,isChecked=false)
-{
-    const newTask = document.createElement('li');
-    
-    newTask.innerHTML = `
-    <div>
-    <input type="checkbox" ${isChecked ? 'checked' : ''}>
-    <label>${taskContent}</label>
-    </div>
-    <div>
-    <i class="fa-regular fa-pen-to-square update_task"></i>
-    <i class="fa-solid fa-trash delete_task"></i>
-    </div>
-    `;
-    taskList.appendChild(newTask);
-    saveTasksInLS();
+//Get All Movies Genres
+/* Store the genres list in the genres variable */
+const getGenres = async()=>
+{ 
+  try{
+    let url = `https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`;
+    const options = {method: 'GET', headers: {accept: 'application/json'}};
+    const response = await fetch(url, options);
+    const data = await  response.json();
+    genres = data.genres;
+  }
+  catch(error){
+    console.log(error);
+  } 
 }
 
-//load all tasks from local storage when the page uploaded
-document.addEventListener('DOMContentLoaded', function () {
-    const savedTasks = JSON.parse(localStorage.getItem('To-DoTasks')) || [];
-    if(savedTasks.length > 0)
-    {
-        savedTasks.forEach(task => {
-            addTask(task.taskData,task.taskChecked);
+//Display movies in the home page
+const displayMovies = (movies)=>
+{
+  try{
+    const cards = document.getElementById("cards");
+    //Delete All cards
+    while (cards.firstChild) {
+      cards.removeChild(cards.firstChild);
+    }
+    //Get wishlist movieId's to change the like (heart) color
+    const storedMovieIds = JSON.parse(localStorage.getItem('wishlistMovieIds')) || [];
+
+    movies.forEach(movie => {
+      /*Exclude any movie withour poster picture */
+      if(movie['poster_path'] !=null)
+      {
+        /* Get genres of each movie */
+        let movieGenres = "";
+        movie.genre_ids.forEach(id => {
+          const genre = genres.find(genre => genre.id === id);
+          movieGenres += `<p>${genre.name}</p>`;
         });
+
+        let new_card = document.createElement('li');
+        new_card.innerHTML = `
+        <li class="card" data-movie-id=${movie['id']}>
+              <div class="card_overlay">
+                <a onClick="showMovieDetails(event)">
+                    See Details
+                </a>
+                <div class="movie_info">
+                    <h3 class="movie_year">${movie['release_date'].split("-")[0]}</h3>
+                    <h2 class="movie_title">${movie['title']}</h2>
+                </div>
+              </div>
+              <div class="card_img">
+                <img src="${base_url+movie['poster_path']}" alt="movie image">
+              </div>
+              <div class="card_content">
+                <div class="movie_rate">
+                    <p class="movie_rating">${movie['vote_average'].toFixed(1)}</p>
+                    <i class="fa-solid fa-heart like_movie ${storedMovieIds.indexOf(String(movie['id'])) > -1 ? 'added' : 'removed'}" style="display: block;" onclick="addMovieToWishlist(event)"></i>
+                    </div>
+                <div class="movie_genre">
+                  ${movieGenres}
+                </div>
+                </div>
+              </div>
+          </li>
+        `;
+        cards.appendChild(new_card);
+      }
+    });
+  }
+  catch(error){
+    console.log(error);
+  } 
+}
+
+//Fetch movies -Receives url-
+const fetchMovies = async (url) => {
+  try {
+    const options = { method: 'GET', headers: { accept: 'application/json' } };
+    const response = await fetch(url, options);
+    const data = await response.json(); 
+    let movies = data['results'];
+    displayMovies(movies);
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
+
+//Load popular movies when the page is uploaded
+document.addEventListener('DOMContentLoaded',  async()=> {
+  try{
+    await getGenres();
+    let url = `https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&include_adult=false&language=en-US&page=1`;
+    fetchMovies(url);
+  }
+  catch(error){
+    console.log(error);
+  } 
+})
+
+//Search for movies
+movieSearchInput.addEventListener('change',(e)=>{
+  try{
+    const searchedMovie= e.target.value;
+    let url = `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&include_adult=false&query=${searchedMovie}`;
+    fetchMovies(url);
+  }
+  catch(error){
+    console.log(error);
+  } 
+})
+
+//Add or Remove Specific movie to/from Local Storage
+const addMovieToLS = (movieId,add=true)=>
+{
+  try{
+    const storedMovieIds = JSON.parse(localStorage.getItem('wishlistMovieIds')) || [];
+    if(add && storedMovieIds.indexOf(movieId) == -1 )
+    {
+      storedMovieIds.push(movieId);
     }else{
-        addTask('Default Task');
+      let index = storedMovieIds.indexOf(movieId);
+      if (index > -1) { 
+        storedMovieIds.splice(index, 1); 
+      }
     }
+    localStorage.setItem('wishlistMovieIds', JSON.stringify(storedMovieIds));
+  }
+  catch(error){
+    console.log(error);
+  } 
 
-    const taskCheckboxes = taskList.querySelectorAll('input[type="checkbox"]');
-    taskCheckboxes.forEach((checkbox,index)=>{
-        if(savedTasks[index] && savedTasks[index].taskChecked)
-        {
-            let taskLabel = checkbox.nextElementSibling;
-            taskLabel.style.textDecoration = 'line-through';
-        }
-    });
-
-});
-
-//save tasks in local storage (LS)
-function saveTasksInLS()
-{
-    const tasks = Array.from(taskList.querySelectorAll('li')).map(task =>{
-        let taskData =  task.querySelector('label').innerHTML;
-        let taskChecked = task.querySelector('input[type="checkbox"]').checked;
-        return{
-            taskData:taskData,
-            taskChecked:taskChecked
-        }
-    });
-
-    localStorage.setItem('To-DoTasks', JSON.stringify(tasks));
 }
 
-//check exsisting of duplicate task
-function checkDuplicateTask(taskContent)
-{
-    const savedTasks = JSON.parse(localStorage.getItem('To-DoTasks')) || [];
-    return savedTasks.some(task => task.taskData === taskContent);
-}
-
-//Check tasks
-taskList.addEventListener('change',(e)=>
-{
-    const taskLabel = e.target.nextElementSibling;
-    if (e.target.checked) {
-        taskLabel.style.textDecoration = 'line-through';
+//Add movie to wishlist
+/* Change the like (heart icon) color and call add movies to local storage */
+const addMovieToWishlist=(event) => {
+  try{
+    const clickedElement = event.target;
+    const movieCard =  event.target.closest('li');
+    const movieId = movieCard.dataset.movieId;
+  
+    if (clickedElement.classList.contains('added')) {
+      clickedElement.classList.remove('added');
+      clickedElement.classList.add('removed');
+      addMovieToLS(movieId, false);
     } else {
-        taskLabel.style.textDecoration = 'none';
+      clickedElement.classList.add('added');
+      clickedElement.classList.remove('removed');
+      addMovieToLS(movieId, true);
     }
-    saveTasksInLS();
-})
-
-//save updated task
-function updateTask(event,isChecked)
-{
-    
-    const listItem = event.target.closest('li');
-    let listInputvalue = listItem.querySelector('input').value;
-    listItem.innerHTML = `
-    <div>
-    <input type="checkbox" ${isChecked ? 'checked' : ''}>
-    <label>${listInputvalue}</label>
-    </div>
-    <div>
-    <i class="fa-regular fa-pen-to-square update_task"></i>
-    <i class="fa-solid fa-trash delete_task"></i>
-    </div>
-    `;
-    saveTasksInLS();
+  }
+  catch(error){
+    console.log(error);
+  } 
 }
 
-//add new task
-addNewTask.addEventListener('click',(e)=>{
-    const addTaskInput = document.getElementById('addTask_input');
-    const addTaskError = document.getElementById('addTask_error');
-    let taskContent = addTaskInput.value.trim();
-    if(!taskContent)
-    {
-        addTaskInput.classList.add('invalid');
-        addTaskError.innerHTML ="Can't add empty task! Please fill the input field.";
-        addTaskError.style.display = "block";
-    }else if(checkDuplicateTask(taskContent))
-    {
-        addTaskError.innerHTML ="This task is already exsist!";
-        addTaskError.style.display = "block";
-    }
-    else{
-        addTaskInput.classList.remove('invalid');
-        addTaskError.style.display = "none";
-        addTask(taskContent,false);
-        addTaskInput.value = "";
-    }
-})
 
-//delete all tasks
-deleteAllTasks.addEventListener('click',(e)=>
-{
-    while (taskList.firstChild) {
-        taskList.removeChild(taskList.firstChild);
-    }
-    saveTasksInLS();
-})
+//Go to page show movie details
+const showMovieDetails= (event)=> {
+  try{
+    const clickedCard = event.target.closest('li');
+    const movieId = clickedCard.dataset.movieId;
+    
+    //add movie id to params
+    const movieDetailsURL = `movieDetails.html?movieId=${movieId}`;
+    
+    // Navigate to the movieDetails page with the movieId in the URL
+    window.location.href = movieDetailsURL;
+  }
+  catch(error){
+    console.log(error);
+  } 
 
-//delete or update specific task
-taskList.addEventListener('click', function (event) {
-    if (event.target.classList.contains('delete_task')) {
-        const listItem = event.target.closest('li');
-        if (listItem) {
-            taskList.removeChild(listItem);
-            saveTasksInLS();
-        }
-    }else if (event.target.classList.contains('update_task'))
-    {
-        const listItem = event.target.closest('li');
-        const isChecked = listItem.querySelector('input[type="checkbox"]').checked;
-        let listInput = `
-        <input type="text" id="updateTaskContent" value="${listItem.querySelector('label').innerHTML}">
-        `;
-        listItem.innerHTML = `
-        <div>
-        ${listInput}
-        <button onClick="updateTask(event,${isChecked})" class="saveTaskButton"> Save </button>
-        </div>
-        `;
-    }
-});
-
+}
