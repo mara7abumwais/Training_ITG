@@ -44,8 +44,9 @@ const displayMovies = (movies)=>
         });
 
         let new_card = document.createElement('li');
+        new_card.className = "card";
+        new_card.dataset.movieId = movie['id'];
         new_card.innerHTML = `
-        <li class="card" data-movie-id=${movie['id']}>
               <div class="card_overlay">
                 <a onClick="showMovieDetails(event)">
                     See Details
@@ -68,7 +69,6 @@ const displayMovies = (movies)=>
                 </div>
                 </div>
               </div>
-          </li>
         `;
         cards.appendChild(new_card);
       }
