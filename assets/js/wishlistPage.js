@@ -12,6 +12,15 @@ const displayWishlistMovies = (movies)=>
         while (wishlistMovies.firstChild) {
             wishlistMovies.removeChild(wishlistMovies.firstChild);
         }
+        //display no movies found message when no movies in wishlist
+        const noMoviesMessage = document.getElementById('noWishlistMessage');
+        if(movies.length === 0)
+        {
+            noMoviesMessage.style.display = "block";
+            return;
+        }
+        noMoviesMessage.style.display = "none";
+
         movies.forEach(movie => {
             const movieCard = document.createElement('div');
             movieCard.className = "col-lg-3 col-12";
@@ -84,10 +93,10 @@ const removeMovieFromWishlist= (event,movieId)=>
             if (index > -1) { 
                 storedMovieIds.splice(index, 1); 
                 event.target.style.color = '#fff';
+                localStorage.setItem('wishlistMovieIds', JSON.stringify(storedMovieIds));
+                // load all wishlist again to exclude the removed movie
+                loadAllWishlist();
             }
-        localStorage.setItem('wishlistMovieIds', JSON.stringify(storedMovieIds));
-        // load all wishlist again to exclude the removed movie
-        loadAllWishlist();
     }
     catch(error){
         console.log(error);

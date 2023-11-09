@@ -27,12 +27,16 @@
 
 
    <header class="header">
-      <div class="container">
+      <div class="container" id="cards_container">
             <div class="search">
                <input type="text" class="searchTerm" id="movieSearch" placeholder="Search for movie">
                <button type="submit" class="searchButton">
                   <i class="fa fa-search"></i>
                </button>
+            </div>
+            <div class="no-movies-message" id="noMoviesMessage">
+               <p>Sorry, no movies found for the given search.</p>
+               <p>Please try again with a different movie title.</p>
             </div>
          <ul class="cards" id="cards">
             

@@ -255,6 +255,15 @@ body {
     margin: 5px;
     background-color: var(--red);
 }
+
+.no-movies-message
+{
+    font-size: 1.8em;
+    color: var(--white);
+    padding: 50px;
+}
+
+
 .cards::-webkit-scrollbar {
     height: 12px;
 }

@@ -21,21 +21,27 @@ const getGenres = async()=>
 }
 
 //Display movies in the home page
-const displayMovies = (movies)=>
-{
-  try{
+const displayMovies = (movies) => {
+  try {
     const cards = document.getElementById("cards");
-    //Delete All cards
+    // Delete All previous cards
     while (cards.firstChild) {
       cards.removeChild(cards.firstChild);
     }
-    //Get wishlist movieId's to change the like (heart) color
+    // Get wishlist movieId's to change the like (heart) color
     const storedMovieIds = JSON.parse(localStorage.getItem('wishlistMovieIds')) || [];
 
+    //Display no movies found message if there is no mvoies 
+    const noMoviesMessage = document.getElementById('noMoviesMessage');
+    if (movies.length === 0) {
+      noMoviesMessage.style.display = "block";
+      return;
+    }
+    noMoviesMessage.style.display = "none";
+
     movies.forEach(movie => {
-      /*Exclude any movie withour poster picture */
-      if(movie['poster_path'] !=null)
-      {
+      /* Exclude any movie without a poster picture */
+      if (movie['poster_path'] != null) {
         /* Get genres of each movie */
         let movieGenres = "";
         movie.genre_ids.forEach(id => {
@@ -47,59 +53,79 @@ const displayMovies = (movies)=>
         new_card.className = "card";
         new_card.dataset.movieId = movie['id'];
         new_card.innerHTML = `
-              <div class="card_overlay">
-                <a onClick="showMovieDetails(event)">
-                    See Details
-                </a>
-                <div class="movie_info">
-                    <h3 class="movie_year">${movie['release_date'].split("-")[0]}</h3>
-                    <h2 class="movie_title">${movie['title']}</h2>
-                </div>
-              </div>
-              <div class="card_img">
-                <img src="${base_url+movie['poster_path']}" alt="movie image">
-              </div>
-              <div class="card_content">
-                <div class="movie_rate">
-                    <p class="movie_rating">${movie['vote_average'].toFixed(1)}</p>
-                    <i class="fa-solid fa-heart like_movie ${storedMovieIds.indexOf(String(movie['id'])) > -1 ? 'added' : 'removed'}" style="display: block;" onclick="addMovieToWishlist(event)"></i>
-                    </div>
-                <div class="movie_genre">
-                  ${movieGenres}
-                </div>
-                </div>
-              </div>
+          <div class="card_overlay">
+            <a onClick="showMovieDetails(event)">
+              See Details
+            </a>
+            <div class="movie_info">
+              <h3 class="movie_year">${movie['release_date'].split("-")[0]}</h3>
+              <h2 class="movie_title">${movie['title']}</h2>
+            </div>
+          </div>
+          <div class="card_img">
+            <img src="${base_url + movie['poster_path']}" alt="movie image">
+          </div>
+          <div class="card_content">
+            <div class="movie_rate">
+              <p class="movie_rating">${movie['vote_average'].toFixed(1)}</p>
+              <i class="fa-solid fa-heart like_movie ${storedMovieIds.indexOf(String(movie['id'])) > -1 ? 'added' : 'removed'}" style="display: block;" onclick="addMovieToWishlist(event)"></i>
+            </div>
+            <div class="movie_genre">
+              ${movieGenres}
+            </div>
+          </div>
         `;
         cards.appendChild(new_card);
       }
     });
-  }
-  catch(error){
+  } catch (error) {
     console.log(error);
-  } 
+  }
 }
 
-//Fetch movies -Receives url-
+// Fetch searched movies - Receives URL
 const fetchMovies = async (url) => {
   try {
-    const options = { method: 'GET', headers: { accept: 'application/json' } };
-    const response = await fetch(url, options);
-    const data = await response.json(); 
-    let movies = data['results'];
-    displayMovies(movies);
-  }
-  catch (error) {
+    let allMovies = [];
+    let currentPage = 1;
+
+    while (true) {
+      const response = await fetch(`${url}&page=${currentPage}`);
+      const data = await response.json();
+      
+      // If no more results, exit the loop
+      if (data.results.length === 0) {
+        break; 
+      }
+      allMovies = allMovies.concat(data.results);
+      currentPage++;
+    }
+    displayMovies(allMovies);
+  } catch (error) {
     console.log(error);
   }
 }
 
+//Fetch popular movies -Receives url-
+const fetchPopularMovies = async (url) => {
+  try {
+  const options = { method: 'GET', headers: { accept: 'application/json' } };
+  const response = await fetch(url, options);
+  const data = await response.json();
+  let movies = data['results'];
+  displayMovies(movies);
+  }
+  catch (error) {
+  console.log(error);
+  }
+  }
 
 //Load popular movies when the page is uploaded
 document.addEventListener('DOMContentLoaded',  async()=> {
   try{
     await getGenres();
-    let url = `https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&include_adult=false&language=en-US&page=1`;
-    fetchMovies(url);
+    let url = `https://api.themoviedb.org/3/discover/movie?api_key=${api_key}&include_adult=false&language=en-US`;
+    fetchPopularMovies(url);
   }
   catch(error){
     console.log(error);
