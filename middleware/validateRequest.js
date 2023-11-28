@@ -1,12 +1,12 @@
-import * as yup from 'yup';
+import { object, string ,boolean} from 'yup';
 
 export const validateCustomer = async(customer) =>{
-    const customerSchema = yup.object().shape({
-        name:yup.string().min(3).max(15).required(),
-        email:yup.string().email().required(),
-        phone:yup.string().length(10).required(),
-        country:yup.string().required(),
-        isActive:yup.boolean(),
+    const customerSchema = object({
+        name:string().min(3).max(15).required('User name is required'),
+        email:string().matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/,"Invalid email format. Please enter a valid email address.").required('User email is required'),
+        phone:string().length(10, 'Phone must be 10 numbers').required('User phone is required'),
+        country:string().required('User country is required'),
+        isActive:boolean(),
     });
 
     const result = await customerSchema.validate(customer,{abortEarly:false});

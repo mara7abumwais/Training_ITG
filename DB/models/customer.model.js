@@ -18,7 +18,6 @@ const customerSchema = new Schema({
             },
             message:"Invalid email format. Please enter a valid email address."
         },
-        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     },
     phone:{
         type:String,
