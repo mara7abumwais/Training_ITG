@@ -24,7 +24,7 @@ const customerSchema = new Schema({
         required:true,
         validate:{
             validator:function(value){
-                return /^\d{10}$/.test(value); 
+                return /^\d{10}$/.test(value);
             },
             message: 'Phone must have exactly 10 digits',
         }

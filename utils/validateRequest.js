@@ -11,3 +11,4 @@ export const validateCustomer = async(customer) =>{
 
     const result = await customerSchema.validate(customer,{abortEarly:false});
 };
+

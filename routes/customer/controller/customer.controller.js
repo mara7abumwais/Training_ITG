@@ -1,70 +1,71 @@
 import { customerModel } from "../../../DB/models/customer.model.js";
-import { validateCustomer } from "../../../middleware/validateRequest.js";
+import { handleError, handleResponse } from "../../../utils/handler.js";
+import { validateCustomer } from "../../../utils/validateRequest.js";
 
-export const getAllCustomers = async(req,res,next)=>{
+export const getAllCustomers = async(req,res)=>{
     try{
         const customers = await customerModel.find();
-        res.status(200).json({ state: 'Success', message: customers });
+        const response = { state: 'Success', message: customers };
+        return handleResponse(res,200,response)
     }catch(err)
     {
-        next(err);
+        return handleError(res,err);
     }
 };
 
-export const getCustomer = async(req,res,next)=>{
+export const getCustomer = async(req,res)=>{
     try{
         const {id} = req.params;
         const customer = await customerModel.findById(id);
         if(!customer)
-            return next({message:'No customer with the given ID'});
-        res.status(200).json({ state: 'Success', message: customer });
+            return handleError(res,{message:'No customer with the given ID'});
+
+        const response = { state: 'Success', message: customer };
+        return handleResponse(res,200,response);
     }catch(err)
     {
-        return next(err);
+        return handleError(res,err);
     }
 };
 
-export const addCustomer = async(req,res,next)=>{
+export const addCustomer = async(req,res)=>{
     try{
         await validateCustomer(req.body);
         const customer = new customerModel(req.body);
         const result = await customer.save();
-        res.status(201).json({state:'Success', message: result});
+        const response = {state:'Success', message: result};
+        return handleResponse(res,200,response);
     }
     catch (err) {
-        next(err);
+        return handleError(res,err);
     }
 };
 
-export const updateCustomer = async(req,res,next)=>{
+export const updateCustomer = async(req,res)=>{
     try{
         const {id} = req.params;
         await validateCustomer(req.body);
-        const {name,phone,email,isActive,country} = req.body;
-        const customer = await customerModel.findById(id);
+        const customer = await customerModel.findByIdAndUpdate({_id:id},req.body,{new:true});
         if(!customer)
-            return next({message:'No customer with the given ID' });
-        
-        const result = await customerModel.findByIdAndUpdate({_id:id},{
-            name,phone,email,isActive,country
-        },{new:true});
-        res.status(200).json({ state: 'Success', message: result });
+            return handleError(res,{message:'No customer with the given ID' });
+        const response = { state: 'Success', message: customer };
+        return handleResponse(res,200,response);
     }catch (err) {
-        next(err);
+        return handleError(res,err);
     }
 };
 
-export const deleteCustomer = async(req,res,next)=>{
+export const deleteCustomer = async(req,res)=>{
     try{
         const {id} = req.params;
-        const customer = await customerModel.findById(id);
+        const customer = await customerModel.findByIdAndDelete(id);
         if(!customer)
-            return next({message:'No customer with the given ID' });
-        const result = await customerModel.findByIdAndDelete(id);
-        res.status(200).json({ state: 'Success', message: 'Customer successfully deleted' });
+            return handleError(res,{message:'No customer with the given ID' });
+        const response = { state: 'Success', message: 'Customer successfully deleted' };
+        return handleResponse(res,200,response);
     }
     catch(err)
     {
-        next(err);
+        return handleError(res,err);
     }
 };
