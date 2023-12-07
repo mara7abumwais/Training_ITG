@@ -4,7 +4,6 @@ import index from './routes/index.router.js';
 import customer from './routes/customer/customer.router.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
-
 dotenv.config();
 
 const createApp = () => {
@@ -18,10 +17,10 @@ const createApp = () => {
     });
     return app;
 };
-
 const app = createApp();
 
 connectDB();
+
 const port = process.env.PORT || 3000;
 app.listen(port,()=>console.log(`Listening at port ${port}...`));
 

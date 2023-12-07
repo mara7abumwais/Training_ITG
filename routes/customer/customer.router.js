@@ -1,5 +1,5 @@
 import express from 'express';
-import { addCustomer, deleteCustomer, getAllCustomers, getCustomer, updateCustomer } from './controller/customer.controller.js';
+import { addCustomer, deleteCustomer, getAllCustomers, getCustomer, updateCustomer } from './customer.controller.js';
 const router = express.Router();
 
 router.get('/',getAllCustomers);

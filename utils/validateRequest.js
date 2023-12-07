@@ -8,7 +8,7 @@ export const validateCustomer = async(customer) =>{
         country:string().required('User country is required'),
         isActive:boolean(),
     });
-
     const result = await customerSchema.validate(customer,{abortEarly:false});
+    //validate in the funftion
 };
 
