@@ -35,7 +35,6 @@ export const addCustomer = async(req,res)=>{
         return handleResponse(res,200,{success:true, customer});
     }
     catch (err) {
-        console.error('Error in addCustomer:', err);
         return handleError(res,err);
     }
 };

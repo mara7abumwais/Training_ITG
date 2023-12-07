@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const options = { method: 'GET', headers: { accept: 'application/json' } };
         const response = await fetch(url, options);
         const data = await response.json();
-        if(data && data.state === 'Success')
+        if(data && data.success === true)
         {
             noUsersMsg.style.display = "none";
-            const users = data.message;
+            const users = data.customers;
             users.forEach(user => {
                 displayUser(user);
             });
@@ -86,8 +86,8 @@ const saveUser = async(e)=>
 
         const response = await fetch(url, options);
         const data = await response.json();
-        if (data && data.state === 'Success') {
-            const user = data.message;
+        if (data && data.success === true) {
+            const user = data.customer;
             listItem.innerHTML = `
             <div>
             <p>Name: <span class="userInfo">${user.name}</span></p>
@@ -148,11 +148,11 @@ addNewUser.addEventListener('click',async(e)=>{
             const response = await fetch(url, options);
             const data = await response.json();
             console.log(data);
-            if(data && data.state === "Success")
+            if(data && data.success === true)
             {
                 addNewUser.textContent = 'Add New User';
                 addUserForm.style.display = "none";
-                displayUser(data.message);
+                displayUser(data.customer);
                 alert('User added successfully.')
             }
             else{
@@ -192,8 +192,8 @@ userList.addEventListener('click', async(event)=> {
         const id = listItem.dataset.userId;
         try {
             const data = await deleteUser(id);
-            if (data && data.state === 'Success') {
-                alert(data.message);
+            if (data && data.success === true) {
+                alert('Customer deleted successfully.');
                 userList.removeChild(listItem);
             }else {
                 alert('Error while deleting user: Unexpected server response');
@@ -208,8 +208,8 @@ userList.addEventListener('click', async(event)=> {
         const id = listItem.dataset.userId;
         try{
             const data = await getUser(id);
-            if (data && data.state === 'Success') {
-                const user = data.message;
+            if (data && data.success === true) {
+                const user = data.customer;
 
                 listItem.innerHTML = `
                 <div class="update_user">
