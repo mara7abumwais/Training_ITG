@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const customerSchema = new Schema({
+export const customerModel = model('Customer',new Schema({
     name:{
         type:String,
         minlength:3,
@@ -37,6 +37,4 @@ const customerSchema = new Schema({
         type:Boolean,
         default:true
     }
-},{timestamps:true});
-
-export const customerModel = model('Customer',customerSchema);
+},{timestamps:true}));
