@@ -108,7 +108,7 @@ const saveUser = async(e)=>
             const errors = data.errors;
             errors.forEach(error => {
                 const errorMsg = document.createElement('p');
-                errorMsg.innerHTML = error.message;
+                errorMsg.innerHTML = error;
                 errorsList.appendChild(errorMsg);
             });
         }
@@ -147,7 +147,6 @@ addNewUser.addEventListener('click',async(e)=>{
             };
             const response = await fetch(url, options);
             const data = await response.json();
-            console.log(data);
             if(data && data.success === true)
             {
                 addNewUser.textContent = 'Add New User';
@@ -160,7 +159,7 @@ addNewUser.addEventListener('click',async(e)=>{
                 const errors = data.errors;
                 errors.forEach(error => {
                     const errorMsg = document.createElement('p');
-                    errorMsg.innerHTML = error.message;
+                    errorMsg.innerHTML = error;
                     errorsList.appendChild(errorMsg);
                 });
             }
@@ -199,7 +198,7 @@ userList.addEventListener('click', async(event)=> {
                 alert('Error while deleting user: Unexpected server response');
             }
         } catch (error) {
-            console.error('Error while deleting user:', error.message);
+            console.error('Error while deleting user:', error);
         }
     }
     else if (event.target.classList.contains('update_user'))

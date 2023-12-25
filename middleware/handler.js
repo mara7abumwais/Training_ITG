@@ -20,5 +20,5 @@ export const handleError = (err,req,res,next) => {
         statusCode = 400;
     }
     else errors.push('Something went wrong!');
-    return handleResponse(res, statusCode, { success: false, messages: errors });
+    return handleResponse(res, statusCode, { success: false,errors });
 };
