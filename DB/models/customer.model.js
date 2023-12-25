@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import jwt from 'jsonwebtoken';
 
-export const customerModel = model('Customer',new Schema({
+const userSchema = new Schema({
     name:{
         type:String,
         minlength:3,
@@ -37,4 +38,11 @@ export const customerModel = model('Customer',new Schema({
         type:Boolean,
         default:true
     }
-},{timestamps:true}));
+});
+
+userSchema.methods.generateAuthToken = function (){
+    const token = jwt.sign({_id:this._id},process.env.CRUD_jwtPrivateKey,{ expiresIn: '8h' });
+    return token;
+};
+
+export const customerModel = model('Customer',userSchema);

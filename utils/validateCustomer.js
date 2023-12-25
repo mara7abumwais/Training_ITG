@@ -6,4 +6,4 @@ export const customerSchema = object({
     phone:string().length(10, 'Phone must be 10 numbers').required('User phone is required'),
     country:string().required('User country is required'),
     isActive:boolean(),
-});
+}).unknown();

@@ -1,7 +1,6 @@
 import { customerModel } from "../DB/models/customer.model.js";
 import CustomError from "../utils/customError.js";
 import { handleResponse } from "../middleware/handler.js";
-import { customerSchema } from "../utils/validateCustomer.js";
 import _ from 'lodash';
 
 export const getAllCustomers = async(req,res)=>{
@@ -18,17 +17,22 @@ export const getCustomer = async(req,res)=>{
 };
 
 export const addCustomer = async(req,res)=>{
-    let customer = await customerSchema.validate(_.pick(req.body,
-        ['name','email','phone','country','isActive'])|| {}, { abortEarly: false });
-    customer = new customerModel(customer);
+    let customer = await customerModel.findOne({email:req.body.email});
+    if(customer) throw new CustomError('The user is already registered.',400);
+
+    customer = new customerModel(_.pick(req.body,['name','email','phone','country','isActive']));
     await customer.save();
-    return handleResponse(res,200,{success:true, customer});
+
+    const token = customer.generateAuthToken();
+    return handleResponse(res,200,{success:true, customer},token);
 };
 
 export const updateCustomer = async(req,res)=>{ 
     const {id} = req.params;
-    let customer = await customerSchema.validate(_.pick(req.body,['name','email','phone','country','isActive'])|| {}, { abortEarly: false });
-    customer = await customerModel.findByIdAndUpdate({_id:id},customer,{new:true});
+
+    const customer = await customerModel.findByIdAndUpdate({_id:id},
+        _.pick(req.body,['name','email','phone','country','isActive']),{new:true});
+    
     if(!customer) throw new CustomError('Invalid ID',404);
     return handleResponse(res,200,{ success: true, customer });
 };
