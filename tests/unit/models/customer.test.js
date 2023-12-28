@@ -7,8 +7,7 @@ describe('user.generateAuthToken',()=>{
         const payload = {
             _id: new Types.ObjectId().toString()
         };
-        const customer = new customerModel(payload);
-        const token = customer.generateAuthToken();
+        const token = new customerModel(payload).generateAuthToken();
         const decoded = jwt.verify(token,process.env.CRUD_jwtPrivateKey);
         expect(decoded).toMatchObject(payload);
     });

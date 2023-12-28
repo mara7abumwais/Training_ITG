@@ -6,7 +6,7 @@ export const auth =(req,res,next)=>{
         const token = req.header('x-auth-token');
         if(!token) throw new CustomError('Access denied. No token provided.',401);
         const decoded = jwt.verify(token,process.env.CRUD_jwtPrivateKey);
-        req.user = decoded;
+        req.customer = decoded;
         next();
     }catch(err)
     {

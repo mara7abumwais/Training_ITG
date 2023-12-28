@@ -7,5 +7,5 @@ const app = createApp();
 connectDB();
 
 const port = process.env.PORT || 3000;
-app.listen(port,()=>console.log(`Listening at port ${port}...`));
+export const server = app.listen(port,()=>console.log(`Listening at port ${port}...`));
 
