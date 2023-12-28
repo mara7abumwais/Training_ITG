@@ -5,7 +5,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules --experimental-specifier-resolution=node node_modules/jest/bin/jest.js --detectOpenHandles --setupFiles=dotenv/config --coverage",
     "start": "webpack --config webpack.config.cjs --watch",
     "build": "webpack --mode production"
   },
@@ -24,6 +24,7 @@
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
     "eslint": "^8.54.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.0.1",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
